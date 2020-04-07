@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gxlm.springboot.db.dao.UserDao">
+	<insert id="createUser" parameterType="java.util.Map"> 
+		INSERT INTO tp_user(tel,password,nickname,secret) 
+		VALUES (#{tel},md5(#{password}),#{nickname},#{secret})
+	</insert>
+	
+	<update id="updateUser"> 
+	   UPDATE 
+	       tp_user 
+	   SET 
+	       nickname = #{nickName} 
+	   WHERE
+	       user_id = #{userId}
+	</update>
+	
+	<select id="getUser" resultType="com.gxlm.springboot.db.entity.UserInfo"> 
+	   SELECT 
+	       tel,nickname,password
+	   FROM 
+	       tp_user 
+	   WHERE 
+	       user_id = #{id}
+	</select>
+	
+	<delete id="deleteUserByUserId"> 
+	   DELETE FROM tp_user WHERE tel = #{tel} 
+	</delete>
+</mapper>

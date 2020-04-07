@@ -1,0 +1,19 @@
+server:
+  port: 8443
+  servlet: 
+    session:
+      timeout: 1800s #会话默认30分钟超时
+  ssl: 
+    key-store: classpath:tomcat.keystore
+    key-store-password: sjm2017 
+    key-password: sjm2017
+ 
+#spring:
+#  datasource: #数据库相关属性配置
+#    url: jdbc:mysql://localhost:3306/model_test
+#    username: root
+#    password: mysql
+#    driver-class-name: com.mysql.jdbc.Driver
+#    type: com.alibaba.druid.pool.DruidDataSource
+
+

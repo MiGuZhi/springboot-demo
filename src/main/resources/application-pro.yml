@@ -1,0 +1,160 @@
+server:
+  port: 8080
+##Servlet相关配置##
+  servlet: 
+    session:
+      timeout: 600s #会话超时时间,默认30分钟
+##SSL(如果要开启SSL端口要设置为8443)##
+#  ssl: 
+#    key-store: classpath:tomcat.keystore #秘钥路径
+#    key-store-password: sjm2017
+#    key-password: sjm2017
+
+spring:
+##数据源相关配置##
+  datasource: 
+    url: jdbc:mysql://localhost:3306/content_test?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=GMT%2B8
+    username: root
+    password: mysql
+    #真是没想到,SpringBoot中支持的Mysql驱动更新了,原来的com.mysql.jdbc.Driver已不让用了,我日
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+##Redis配置##
+  redis:
+#连接设置
+    database: 0 #数据库索引
+    host: 127.0.0.1 #Redis IP
+    port: 6379 #Redis端口
+    password:  #Redis密码,没有就不配置
+    timeout: 10000ms #链接超时时间（毫秒）
+##SpringBoot2.x以下版本默认使用的是jedis客户端,而SpringBoot2.x+可以选择jedis作为客户端,也可选择lettuce作为客户端
+##二者区别:
+##jedis在多线程环境下是非线程安全的,使用了jedis pool连接池,为每个Jedis实例增加物理连接。
+##lettuce的连接是基于Netty的,连接实例（StatefulRedisConnection）可以在多个线程间并发访问
+##----(1).SpringBoot2.x以下版本,默认jedis客户端,直接配置连接池----##
+#    pool: #链接池
+#      max-active: 8 #最大连接数（负值表示没有限制）
+#      max-wait: 1 #最大阻塞等待时间（负值表示没有限制）
+#      max-idle: 8 #最大空闲链接
+#      min-idle: 0 #最小空闲链接
+##----(2).SpringBoot2.x+版本,Redis客户端可选jedis或lettuce作为客户端----##
+##----(2-1)选择lettuce客户端(SpringBoot2.x+版本)----##
+    lettuce:
+      pool: #连接池
+        max-active: 8 #最大连接数（负值表示没有限制）
+        max-wait: -1 #最大阻塞等待时间（负值表示没有限制）
+        max-idle: 8 #最大空闲链接
+        min-idle: 0 #最小空闲链接
+##----(2-2)选择jedis客户端(SpringBoot2.x+版本)----##
+#    jedis:
+#      pool: #连接池
+#        max-active: 8 #最大连接数（负值表示没有限制）
+#        max-wait: 1 #最大阻塞等待时间（负值表示没有限制）
+#        max-idle: 8 #最大空闲链接
+#        min-idle: 0 #最小空闲链接
+
+##Mybatis配置##
+##如果Mybatis使用mapper接口的方式,需要指定"mapper.xml"文件的位置.
+##另外: "mapper.xml"文件最好放在classpath下,不要放到包下,原因是Idea编译时
+##不会主动复制xml文件到编译生成目录下,需要在pomx.xml的build节点中额外配置一些东西才可
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+
+################SpringBoot属性注入测试####################
+##自定义属性-(1)对象属性注入
+#对象集合属性注入-ConfigFcmAppsProp
+config-fcm-apps-prop:
+  list:
+    - app-name: TestFcm
+      credent-class-path: config/fcm/myfcm-2f2b0-firebase-adminsdk-5r6qo-53f4a67857.json
+      database-url: https://myfcm-2f2b0.firebaseio.com
+    - app-name: PushFcm
+      credent-class-path: config/fcm/fem-push-firebase-adminsdk-7gmne-981d322a44.json
+      database-url: https://fem-push.firebaseio.com
+
+#随机对象属性注入-ConfigRandomProp
+config-random-prop: 
+  num: ${random.int(100)} #100内随机整数 
+  num1: ${random.int(0,99)} #0-99内的随机整数
+  str: ${random.value} #32位的随机字符串 
+  uuid: ${random.uuid} #uuid 
+
+#非POJO对象属性注入-ConfigStudentProp
+config-student-prop: 
+  className: Configuration复杂对象属性注入
+  cno: 19810
+  userInfo: #虽然springBoot会自动将连字符"-",下划线"_"自动转成驼峰格式,但这里写成连字符必定失效
+    name: 唐糖
+    age: 16
+    sex: 女
+    adult: false
+    list: #通常List集合都是"-"开头表示一个元素的开始,也能用常用的逗号分隔
+      - java
+      - python
+      - javascript
+    map: 
+      '0': 'redis'
+      '1': 'mongodb'
+
+#POJO对象属性注入-ConfigUserInfoProp
+user-info: 
+  name: 简单POJO对象
+  age: 30
+  sex: 男
+  adult: true
+  list: git,svn #SpringBoot List属性注入,自动用逗号分隔
+  map: {'2':'Mysql','3':'Oracle'}
+
+##自定义属性-(2)@Value静态属性注入
+#StaticRandomProp
+staticRandomProp: 
+  num: ${random.int(200)} #200内随机整数 
+  num1: ${random.int(100,200)} #100-200内的随机整数
+  str: ${random.value} #32位的随机字符串 
+  uuid: ${random.uuid} #uuid 
+
+##自定义属性-(3)@Value属性注入
+#RandomValueProp
+randomValueProp: 
+  num: ${random.int(400)} #400内随机整数 
+  num1: ${random.int(400,800)} #400-800内的随机整数
+  str: ${random.value} #32位的随机字符串 
+  uuid: ${random.uuid} #uuid 
+
+#StudentValueProp
+studentValueProp: 
+  className: "@Value属性注入"
+  cno: 9527
+  userInfo: #虽然springBoot会自动将连字符"-",下划线"_"自动转成驼峰格式,但这里写成连字符必定失效
+    name: 唐寅
+    age: 19
+    sex: 男
+    adult: true
+
+#UserInfoValueProp
+userInfoValueProp:
+  name: "@Value简单POJO对象属性注入"
+  age: 46
+  sex: 男
+  adult: true
+  list: 1,2,3,4,5
+#  list: #这种Value默认的List集合格式,实测竟然不行
+#    - 1
+#    - 2
+#    - 3
+#    - 4
+#    - 5
+#  map: {'0':'redis','1':'mongodb'}
+#  map: 
+#    '0': 'redis'
+#    '1': 'mongodb'
+
+
+
+
+
+
+
+
+

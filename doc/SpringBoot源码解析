@@ -1,0 +1,20 @@
+(1).JavaConfig技术
+(1).SpringBoot自动配置源码解析
+(1).如何直接实现starter主键完成自动配置
+
+
+Spring3.0消灭XML
+
+SpringBoot 实现Servlet3.0机制SPI
+SpringBoot用JavConfig技术 实现自动配置
+
+
+selectImports()返回一个String数组,数组内必须是java类名
+spring会把这些java类加载到IOC容器中去
+
+getAutoConfigurationEntry接收所有的自动配置类的类名,并且过滤
+
+getCandidateConfigurations返回所有自动配置类类名
+
+SpringFactoriesLoader.loadFactoryNames
+
